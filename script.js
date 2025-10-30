@@ -1,26 +1,31 @@
-// script.js
-const API_BASE = "https://your-railway-url.up.railway.app"; // 🔁 Ganti dengan URL Railway kamu
+// Ganti sesuai dengan akun kamu
+const AIO_USERNAME = "First_Last_156";
+const AIO_KEY = "aio_wmPN101jgw4DQtm8hMcRhBFQMis";
 
-async function loadStatus() {
-  try {
-    const res = await fetch(API_BASE + "/status");
-    const data = await res.json();
-    document.getElementById("state").innerText = data.state;
-    document.getElementById("distance").innerText = data.distance ?? "--";
-  } catch (err) {
-    document.getElementById("state").innerText = "Disconnected";
-    document.getElementById("distance").innerText = "--";
+// Koneksi MQTT ke Adafruit IO (pakai WebSocket)
+const client = new AdafruitMQTTClient({
+  username: AIO_USERNAME,
+  key: AIO_KEY
+});
+
+const feedDistance = `${AIO_USERNAME}/feeds/status`;
+const feedCommand = `${AIO_USERNAME}/feeds/command`;
+
+client.on("connect", () => {
+  console.log("Terhubung ke Adafruit IO!");
+  client.subscribe(feedDistance);
+});
+
+client.on("message", (topic, message) => {
+  if (topic === feedDistance) {
+    document.getElementById("distance").innerText = message;
   }
-}
+});
 
-async function feedNow() {
-  try {
-    await fetch(API_BASE + "/feed", { method: "POST" });
-    alert("Perintah FEED dikirim!");
-  } catch (err) {
-    alert("Gagal mengirim perintah FEED");
-  }
+function feedNow() {
+  client.publish(feedCommand, "FEED");
+  document.getElementById("state").innerText = "Feeding...";
+  setTimeout(() => {
+    document.getElementById("state").innerText = "Ready";
+  }, 3000);
 }
-
-setInterval(loadStatus, 5000);
-loadStatus();
