@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Feeder Pet</title>
+  <title>🐾 Smart Feeder Pet</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/adafruit-mqtt-client/browser/adafruit-mqtt.min.js"></script>
 </head>
 <body>
   <div class="card">
     <h1>🐾 Smart Feeder Pet</h1>
     <button onclick="feedNow()">Feed Now</button>
     <div class="status">
-      <p><strong>Status:</strong> <span id="state">Loading...</span></p>
+      <p><strong>Status:</strong> <span id="state">Ready</span></p>
       <p><strong>Jarak Sensor:</strong> <span id="distance">--</span> cm</p>
     </div>
   </div>
